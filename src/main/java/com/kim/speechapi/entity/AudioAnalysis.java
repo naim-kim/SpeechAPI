@@ -1,37 +1,54 @@
 package com.kim.speechapi.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
+import jakarta.persistence.*;
 
-@Getter
 @Entity
+@Table(name = "audio_analysis")
 public class AudioAnalysis {
 
-    // Getters and setters
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment ID
     private Long id;
 
+    @Column(name = "file_name", nullable = false)
     private String fileName;
-    private double averageDecibels;
-    private int silentSegments;
+
+    @Column(name = "average_decibels", nullable = false)
+    private Double averageDecibels;
+
+    @Column(name = "silent_segments", nullable = false)
+    private Integer silentSegments;
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    public void setAverageDecibels(double averageDecibels) {
+    public Double getAverageDecibels() {
+        return averageDecibels;
+    }
+
+    public void setAverageDecibels(Double averageDecibels) {
         this.averageDecibels = averageDecibels;
     }
 
-    public void setSilentSegments(int silentSegments) {
+    public Integer getSilentSegments() {
+        return silentSegments;
+    }
+
+    public void setSilentSegments(Integer silentSegments) {
         this.silentSegments = silentSegments;
     }
 }
