@@ -1,4 +1,4 @@
-package com.kim.speechapi.controller;
+package com.kim.speechapi;
 
 import com.kim.speechapi.service.AudioAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,37 +13,40 @@ import java.io.File;
 import java.io.IOException;
 
 @Controller
-public class AudioAnalysisController {
+public class HomeController {
 
     @Autowired
     private AudioAnalysisService audioAnalysisService;
 
-    @GetMapping("/")
-    public String uploadPage() {
-        return "upload"; // Points to upload.html in the templates folder
+    // Render the upload page
+    @GetMapping("/upload")
+    public String home() {
+        return "upload"; // Points to upload.html in templates
     }
 
+    // Handle file upload and analysis
     @PostMapping("/analyze")
     public String analyzeAudio(@RequestParam("file") MultipartFile file, Model model) throws IOException {
-        // Save file to a temporary location
+        // Save the file to a temporary directory
         String filePath = saveToFileSystem(file);
 
-        // Analyze the .wav file
+        // Perform audio analysis
         double decibel = audioAnalysisService.analyzeDecibel(filePath);
         int blanks = audioAnalysisService.countBlanks(filePath);
 
-        // Add results to the model
+        // Add analysis results to the model for display
         model.addAttribute("decibel", decibel);
         model.addAttribute("blanks", blanks);
 
-        return "result"; // Points to result.html in the templates folder
+        return "result"; // Points to result.html in templates
     }
 
+    // Helper method to save the uploaded file
     private String saveToFileSystem(MultipartFile file) throws IOException {
         String filePath = "uploads/" + file.getOriginalFilename();
         File destination = new File(filePath);
-        destination.getParentFile().mkdirs();
-        file.transferTo(destination);
+        destination.getParentFile().mkdirs(); // Ensure the directory exists
+        file.transferTo(destination); // Save the file
         return filePath;
     }
 }
