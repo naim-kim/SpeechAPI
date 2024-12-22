@@ -55,6 +55,11 @@ dependencies {
 
     // Optional: File Handling and Conversion (JAVE2 for .wav processing)
     implementation 'ws.schild:jave-core:2.6.0'
+
+    //Swagger dependencies
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    implementation 'org.springdoc:springdoc-openapi-data-rest:1.7.0'
+
 }
 
 tasks.named('test') {
