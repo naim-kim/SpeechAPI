@@ -27,4 +27,12 @@ public class AudioAnalysisController {
         file.transferTo(new File(filePath));
         return filePath;
     }
+
+    @PostMapping("/count-blanks")
+    public int countBlanks(@RequestParam("file") MultipartFile file) throws IOException {
+        // Save the file temporarily
+        String filePath = saveToFileSystem(file);
+        return audioAnalysisService.countBlanks(filePath);
+    }
+
 }
