@@ -21,6 +21,10 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        name = "TarsosDSP repository"
+        url = "https://mvn.0110.be/releases"
+    }
 }
 
 dependencies {
@@ -45,7 +49,10 @@ dependencies {
 
     // Additional Dependencies
     // Audio Processing Library
-    implementation 'be.tarsos:tarsosdsp:2.4'
+    implementation 'be.tarsos.dsp:core:2.5'
+    implementation 'be.tarsos.dsp:jvm:2.5'
+
+
 
     // Speech-to-Text API (Optional, e.g., Google Cloud Speech-to-Text)
     implementation 'com.google.cloud:google-cloud-speech:2.0.1'
@@ -59,6 +66,8 @@ dependencies {
     //Swagger dependencies
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
     implementation 'org.springdoc:springdoc-openapi-data-rest:1.7.0'
+
+
 
 }
 
