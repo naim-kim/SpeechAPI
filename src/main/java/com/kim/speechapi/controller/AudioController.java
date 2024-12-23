@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/audio")
@@ -42,5 +43,15 @@ public class AudioController {
         }
     }
 
-
+    // GET endpoint to fetch all audio analysis data
+    @GetMapping("/all")
+    public ResponseEntity<List<AudioAnalysis>> getAllAudioAnalysis() {
+        try {
+            List<AudioAnalysis> allAnalysis = audioService.getAllAnalysis();
+            return ResponseEntity.ok(allAnalysis);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

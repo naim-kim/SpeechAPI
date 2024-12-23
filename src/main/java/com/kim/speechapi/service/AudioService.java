@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.List;
 
 @Service
 public class AudioService {
@@ -67,6 +68,13 @@ public class AudioService {
             e.printStackTrace();
             throw new RuntimeException("Error analyzing audio file: " + e.getMessage());
         }
+
+
+    }
+
+    // fetch all records
+    public List<AudioAnalysis> getAllAnalysis() {
+        return repository.findAll();
     }
 
 
