@@ -67,6 +67,9 @@ dependencies {
     // Testing dependencies
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    //Google SST
+    implementation 'com.google.cloud:google-cloud-speech:4.49.0'
+
 
 }
 
