@@ -2,21 +2,27 @@ package com.kim.speechapi.controller;
 
 import com.kim.speechapi.entity.AudioAnalysis;
 import com.kim.speechapi.service.AudioService;
+import com.kim.speechapi.service.STTService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/audio")
 public class AudioController {
 
     private final AudioService audioService;
+    private final STTService sttService;
 
-    public AudioController(AudioService audioService) {
+    public AudioController(AudioService audioService, STTService sttService) {
         this.audioService = audioService;
+        this.sttService = sttService;
     }
 
     @PostMapping("/upload")
@@ -43,6 +49,33 @@ public class AudioController {
         }
     }
 
+    @PostMapping("/transcribe")
+    //TODO: save the transcipt in a new data var
+    public ResponseEntity<?> transcribeAudio(@RequestParam("file") MultipartFile file) {
+        try {
+            // Save the uploaded file temporarily
+            String uploadDir = "C:/uploads/";
+            File directory = new File(uploadDir);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            File savedFile = new File(uploadDir + file.getOriginalFilename());
+            file.transferTo(savedFile);
+
+            // Transcribe the audio file
+            String transcription = sttService.transcribeAudio(savedFile.getAbsolutePath());
+
+            return ResponseEntity.ok(Map.of(
+                    "fileName", file.getOriginalFilename(),
+                    "transcription", transcription
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
+        }
+    }
+
     // GET endpoint to fetch all audio analysis data
     @GetMapping("/all")
     public ResponseEntity<List<AudioAnalysis>> getAllAudioAnalysis() {
@@ -54,4 +87,6 @@ public class AudioController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+
 }

@@ -29,13 +29,23 @@ public class AudioService {
             AnalysisMetrics metrics = new AnalysisMetrics();
 
             dispatcher.addAudioProcessor(new AudioProcessor() {
+                private boolean inSilentSegment = false; // Track if we are in a silent segment
+
                 @Override
                 public boolean process(AudioEvent audioEvent) {
+                    //TODO: set the decibel levels again so it mathces what I want to match ( phone 기준 )
                     double rms = audioEvent.getRMS();
                     double decibels = (rms > 0) ? 20 * Math.log10(rms) : -120; // Assign a minimum decibel value for silence
 
                     if (decibels < -50) {
-                        metrics.silentSegments++;
+                        // Start a new silent segment if we are not already in one
+                        if (!inSilentSegment) {
+                            metrics.silentSegments++;
+                            inSilentSegment = true;
+                        }
+                    } else {
+                        // End the silent segment if the audio is no longer silent
+                        inSilentSegment = false;
                     }
 
                     metrics.totalDecibels += decibels;
@@ -47,6 +57,7 @@ public class AudioService {
                 public void processingFinished() {
                 }
             });
+
 
             dispatcher.run();
 
