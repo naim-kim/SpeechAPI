@@ -33,7 +33,8 @@ public class AudioService {
 
                 @Override
                 public boolean process(AudioEvent audioEvent) {
-                    //TODO: set the decibel levels again so it mathces what I want to match ( phone 기준 )
+                    // TODO: Adjust decibel levels to match phone behavior, e.g., set the minimum decibel floor to match what your phone considers silent (e.g., -40 dB).
+                    // TODO: Consider normalizing RMS values to a consistent reference level before converting to decibels.
                     double rms = audioEvent.getRMS();
                     double decibels = (rms > 0) ? 20 * Math.log10(rms) : -120; // Assign a minimum decibel value for silence
 
@@ -48,6 +49,7 @@ public class AudioService {
                         inSilentSegment = false;
                     }
 
+                    // TODO: Add a mechanism to handle segments where decibels fluctuate near the silence threshold (-50 dB) to avoid over-counting.
                     metrics.totalDecibels += decibels;
                     metrics.sampleCount++;
                     return true;
@@ -55,13 +57,14 @@ public class AudioService {
 
                 @Override
                 public void processingFinished() {
+                    // TODO: Validate metrics at the end to ensure accuracy and completeness of analysis.
                 }
             });
-
 
             dispatcher.run();
 
             // Calculate the average decibels
+            // TODO: Confirm whether silent segments should contribute equally to the average or be weighted differently.
             double averageDecibels = metrics.sampleCount > 0
                     ? metrics.totalDecibels / metrics.sampleCount
                     : -120; // Default to silence if no samples are processed
@@ -71,16 +74,15 @@ public class AudioService {
             analysis.setFileName(audioFile.getName());
             analysis.setAverageDecibels(averageDecibels);
             analysis.setSilentSegments(metrics.silentSegments);
-            repository.save(analysis); // This saves it to the database
+            repository.save(analysis);
 
             return analysis;
 
         } catch (Exception e) {
             e.printStackTrace();
+            // TODO: Add better error handling and detailed logging to help diagnose issues in audio processing.
             throw new RuntimeException("Error analyzing audio file: " + e.getMessage());
         }
-
-
     }
 
     // fetch all records
@@ -88,11 +90,11 @@ public class AudioService {
         return repository.findAll();
     }
 
-
     // Wrapper class to hold analysis metrics
     private static class AnalysisMetrics {
         double totalDecibels = 0;
         int sampleCount = 0;
         int silentSegments = 0;
+        // TODO: Add additional fields if needed, such as the total duration of silent and non-silent segments.
     }
 }
